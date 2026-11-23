@@ -59,12 +59,65 @@ GET {resolverUrl}?spotifyId=<id>&isrc=<isrc>&title=<t>&artist=<a>&album=<al>&dur
 
 或纯文本 URL 一行。
 
+## YouTube
+
+**安装地址**
+
+```
+https://cdn.jsdelivr.net/gh/ccvxxcg0-wq/musicfree-plugins@main/youtube-plugin.js
+```
+
+备用镜像：`https://fastly.jsdelivr.net/gh/ccvxxcg0-wq/musicfree-plugins@main/youtube-plugin.js`
+
+**不需要配置任何变量。** 装完就能搜、就能放全长音频。
+
+**能力**
+
+- 搜索：关键词搜索，支持翻页
+- 播放：解析 `googlevideo.com` 直链，**全长音频**（不是 30 秒试听）
+- 音质：低 m4a 50k / 标准 m4a 130k / 高 m4a 首选 / 超高 最高码率（通常 opus 136k）
+- 单曲信息：标题、频道、时长、封面、播放量
+- 歌词：lrclib.net，按标题+歌手+时长核对，配不上就留空
+- 导入：`youtube.com/watch`、`youtu.be`、`music.youtube.com`、`shorts`、`live`、纯 11 位 ID
+
+不做榜单 / 歌单 / 歌手页 —— 这些端点需要额外鉴权，稳定性差。
+
+**三条硬事实**
+
+1. 国内必须自备代理，`youtube.com` 直连不通。
+2. 直链绑定请求方 IP，换网络打开即 403；插件在手机上跑所以能播，复制到电脑不行。
+3. 直链约 6 小时过期；插件不缓存，每次播放重新解析。
+
+**为什么用 ANDROID 客户端**
+
+2025 年后 YouTube 对 `youtubei/v1/player` 加了 bot 校验。官方示例插件用的 `ANDROID_MUSIC 6.14.50` 已彻底失效（`LOGIN_REQUIRED`，连 `streamingData` 都不返回）。实测对照（2026-11-23，机房出口 IP，同一视频）：
+
+| 客户端 | 结果 |
+|---|---|
+| `ANDROID 20.03.02` | 8/8 成功，全部裸 url |
+| `ANDROID_VR 1.62.27` | 1/8 成功 |
+| `WEB` / `MWEB` / `TVHTML5` | UNPLAYABLE |
+| `WEB_EMBEDDED_PLAYER` | 视频不可用 |
+| `IOS 19.45.4` | HTTP 400 |
+| `ANDROID_MUSIC 6.14.50` | LOGIN_REQUIRED |
+
+主客户端 ANDROID，VR 兜底，两个都失败才报错。
+
+**报错对照**
+
+| 现象 | 原因 |
+|---|---|
+| `YouTube 拒绝解析：Sign in to confirm you're not a bot` | 出口 IP 是机房 IP，换住宅/移动线路 |
+| 搜索有结果但播不出 | 代理不稳，换节点重试 |
+| 没有歌词 | LRCLIB 无此曲，正常 |
+
 ## 版本
 
 | 版本 | 日期 | 变更 |
 |---|---|---|
-| 0.1.1 | 2026-11-23 | 填入 `srcUrl`，支持 MusicFree 内「检查更新」 |
-| 0.1.0 | 2026-11-23 | 首版：13 个方法，离线测试 56 项通过 |
+| 0.1.0 | 2026-11-23 | YouTube 插件：搜索（含翻页）/ 全长音频 / 单曲信息 / LRCLIB 歌词 / 链接导入；离线 63 项 + 联机 10 项通过 |
+| 0.1.1 | 2026-11-23 | Spotify 插件填入 `srcUrl`，支持 MusicFree 内「检查更新」 |
+| 0.1.0 | 2026-11-23 | Spotify 插件首版：13 个方法，离线测试 56 项通过 |
 
 ## 许可
 
