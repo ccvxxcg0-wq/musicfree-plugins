@@ -495,9 +495,6 @@ module.exports = {
   cacheControl: "no-cache",
   supportedSearchType: ["music"],
   userVariables: [],
-  hints: {
-    importMusicSheet: ["粘贴 YouTube 视频链接即可导入"],
-  },
   search: search,
   getMediaSource: getMediaSource,
   getMusicInfo: getMusicInfo,
